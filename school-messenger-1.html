@@ -1,0 +1,3136 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Woliso — School Messenger</title>
+        <link
+            href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap"
+            rel="stylesheet"
+        />
+        <style>
+            /* ─────────────────────────────────────────
+   RESET & BASE
+───────────────────────────────────────── */
+            *,
+            *::before,
+            *::after {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+            }
+            html {
+                font-size: 16px;
+                scroll-behavior: smooth;
+            }
+            body {
+                font-family: "DM Sans", sans-serif;
+                background: var(--cream);
+                color: var(--black);
+                min-height: 100vh;
+                overflow-x: hidden;
+            }
+
+            /* ─────────────────────────────────────────
+   DESIGN TOKENS
+───────────────────────────────────────── */
+            :root {
+                --black: #111111;
+                --white: #fffef2;
+                --cream: #f3f0e3;
+                --yellow: #ffe234;
+                --red: #ff3050;
+                --blue: #2b35ff;
+                --green: #00d176;
+                --border: 2px solid #111111;
+                --shadow: 4px 4px 0px #111111;
+                --shadow-lg: 6px 6px 0px #111111;
+                --radius: 0px;
+                --font-display: "Space Grotesk", sans-serif;
+                --font-mono: "Space Mono", monospace;
+            }
+
+            /* ─────────────────────────────────────────
+   UTILITIES
+───────────────────────────────────────── */
+            .hidden {
+                display: none !important;
+            }
+            .screen {
+                min-height: 100vh;
+                width: 100%;
+            }
+
+            /* ─────────────────────────────────────────
+   CARDS
+───────────────────────────────────────── */
+            .nb-card {
+                background: var(--white);
+                border: var(--border);
+                box-shadow: var(--shadow);
+            }
+            .nb-card-yellow {
+                background: var(--yellow);
+            }
+            .nb-card-blue {
+                background: var(--blue);
+                color: var(--white);
+            }
+            .nb-card-red {
+                background: var(--red);
+                color: var(--white);
+            }
+
+            /* ─────────────────────────────────────────
+   BUTTONS
+───────────────────────────────────────── */
+            .nb-btn {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                gap: 8px;
+                padding: 11px 22px;
+                border: var(--border);
+                box-shadow: var(--shadow);
+                font-family: var(--font-display);
+                font-weight: 700;
+                font-size: 0.82rem;
+                text-transform: uppercase;
+                letter-spacing: 0.06em;
+                cursor: pointer;
+                background: var(--yellow);
+                color: var(--black);
+                transition:
+                    transform 0.08s,
+                    box-shadow 0.08s;
+                text-decoration: none;
+                line-height: 1;
+                user-select: none;
+            }
+            .nb-btn:hover {
+                transform: translate(-2px, -2px);
+                box-shadow: 6px 6px 0px var(--black);
+            }
+            .nb-btn:active {
+                transform: translate(2px, 2px);
+                box-shadow: 1px 1px 0px var(--black);
+            }
+
+            .nb-btn-blue {
+                background: var(--blue);
+                color: var(--white);
+            }
+            .nb-btn-red {
+                background: var(--red);
+                color: var(--white);
+            }
+            .nb-btn-black {
+                background: var(--black);
+                color: var(--white);
+            }
+            .nb-btn-white {
+                background: var(--white);
+                color: var(--black);
+            }
+            .nb-btn-sm {
+                padding: 7px 14px;
+                font-size: 0.72rem;
+            }
+            .nb-btn-lg {
+                padding: 15px 30px;
+                font-size: 0.92rem;
+            }
+            .nb-btn-full {
+                width: 100%;
+            }
+
+            /* ─────────────────────────────────────────
+   FORM FIELDS
+───────────────────────────────────────── */
+            .nb-input {
+                width: 100%;
+                padding: 11px 14px;
+                border: var(--border);
+                background: var(--white);
+                font-family: "DM Sans", sans-serif;
+                font-size: 0.9rem;
+                color: var(--black);
+                outline: none;
+                transition:
+                    box-shadow 0.1s,
+                    border-color 0.1s;
+            }
+            .nb-input:focus {
+                box-shadow: 4px 4px 0px var(--blue);
+                border-color: var(--blue);
+            }
+            .nb-input::placeholder {
+                color: #bbb;
+            }
+
+            .nb-select {
+                width: 100%;
+                padding: 11px 14px;
+                border: var(--border);
+                background: var(--white);
+                font-family: "DM Sans", sans-serif;
+                font-size: 0.9rem;
+                color: var(--black);
+                outline: none;
+                appearance: none;
+                cursor: pointer;
+                background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23111' stroke-width='2.5' fill='none'/%3E%3C/svg%3E");
+                background-repeat: no-repeat;
+                background-position: right 14px center;
+                background-color: var(--white);
+                transition:
+                    box-shadow 0.1s,
+                    border-color 0.1s;
+            }
+            .nb-select:focus {
+                box-shadow: 4px 4px 0px var(--blue);
+                border-color: var(--blue);
+            }
+
+            .nb-textarea {
+                width: 100%;
+                padding: 11px 14px;
+                border: var(--border);
+                background: var(--white);
+                font-family: "DM Sans", sans-serif;
+                font-size: 0.9rem;
+                color: var(--black);
+                outline: none;
+                resize: vertical;
+                min-height: 120px;
+                line-height: 1.65;
+                transition:
+                    box-shadow 0.1s,
+                    border-color 0.1s;
+            }
+            .nb-textarea:focus {
+                box-shadow: 4px 4px 0px var(--blue);
+                border-color: var(--blue);
+            }
+
+            .nb-label {
+                display: block;
+                font-family: var(--font-display);
+                font-size: 0.68rem;
+                font-weight: 700;
+                text-transform: uppercase;
+                letter-spacing: 0.1em;
+                margin-bottom: 7px;
+            }
+
+            /* ─────────────────────────────────────────
+   BADGES
+───────────────────────────────────────── */
+            .nb-badge {
+                display: inline-flex;
+                align-items: center;
+                padding: 3px 9px;
+                border: 1.5px solid var(--black);
+                font-family: var(--font-mono);
+                font-size: 0.6rem;
+                font-weight: 700;
+                text-transform: uppercase;
+                letter-spacing: 0.08em;
+                background: var(--white);
+                color: var(--black);
+                line-height: 1.4;
+            }
+            .nb-badge-yellow {
+                background: var(--yellow);
+            }
+            .nb-badge-red {
+                background: var(--red);
+                color: var(--white);
+                border-color: var(--red);
+            }
+            .nb-badge-blue {
+                background: var(--blue);
+                color: var(--white);
+                border-color: var(--blue);
+            }
+            .nb-badge-green {
+                background: var(--green);
+                color: var(--black);
+                border-color: var(--green);
+            }
+
+            .nb-divider {
+                height: 2px;
+                background: var(--black);
+                margin: 24px 0;
+            }
+
+            body::before {
+                display: none;
+            }
+
+            /* ═══════════════════════════════════════════
+   LANDING SCREEN
+═══════════════════════════════════════════ */
+            #screen-landing {
+                display: flex;
+                flex-direction: column;
+                min-height: 100vh;
+                background: var(--cream);
+            }
+
+            /* ── Ticker ── */
+            .ticker {
+                background: var(--black);
+                color: var(--yellow);
+                border-bottom: var(--border);
+                padding: 9px 0;
+                overflow: hidden;
+                white-space: nowrap;
+            }
+            .ticker-inner {
+                display: inline-block;
+                font-family: var(--font-mono);
+                font-size: 0.68rem;
+                font-weight: 700;
+                text-transform: uppercase;
+                letter-spacing: 0.12em;
+                animation: ticker 30s linear infinite;
+            }
+            @keyframes ticker {
+                from {
+                    transform: translateX(100vw);
+                }
+                to {
+                    transform: translateX(-100%);
+                }
+            }
+
+            /* ── Header ── */
+            .landing-header {
+                padding: 22px 48px;
+                border-bottom: var(--border);
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                background: var(--white);
+                box-shadow: 0 2px 0 var(--black);
+            }
+            .landing-logo {
+                font-family: var(--font-display);
+                font-size: 1.9rem;
+                font-weight: 800;
+                text-transform: uppercase;
+                letter-spacing: 0.06em;
+                line-height: 1;
+            }
+            .landing-logo span {
+                color: var(--blue);
+            }
+            .landing-tagline {
+                font-family: var(--font-mono);
+                font-size: 0.62rem;
+                text-transform: uppercase;
+                letter-spacing: 0.14em;
+                color: #888;
+                margin-top: 5px;
+            }
+
+            /* ── Hero ── */
+            .landing-hero {
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                padding: 72px 24px;
+                position: relative;
+                overflow: hidden;
+            }
+            .landing-hero::before {
+                content: "";
+                position: absolute;
+                inset: 0;
+                pointer-events: none;
+                background: repeating-linear-gradient(
+                    -55deg,
+                    transparent,
+                    transparent 40px,
+                    rgba(0, 0, 0, 0.028) 40px,
+                    rgba(0, 0, 0, 0.028) 41px
+                );
+            }
+
+            .landing-title {
+                font-family: var(--font-display);
+                font-size: clamp(52px, 10vw, 116px);
+                font-weight: 800;
+                text-transform: uppercase;
+                letter-spacing: -0.02em;
+                line-height: 0.9;
+                text-align: center;
+                margin-bottom: 22px;
+                position: relative;
+                z-index: 1;
+            }
+            .landing-title em {
+                font-style: normal;
+                color: var(--blue);
+            }
+
+            .landing-subtitle {
+                font-family: var(--font-mono);
+                font-size: 0.75rem;
+                text-transform: uppercase;
+                letter-spacing: 0.15em;
+                color: #888;
+                margin-bottom: 60px;
+                text-align: center;
+                position: relative;
+                z-index: 1;
+            }
+
+            .landing-cards {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 20px;
+                width: 100%;
+                max-width: 660px;
+                position: relative;
+                z-index: 1;
+            }
+
+            @media (max-width: 600px) {
+                .landing-cards {
+                    grid-template-columns: 1fr;
+                }
+                .landing-header {
+                    padding: 18px 20px;
+                }
+                .landing-logo {
+                    font-size: 1.5rem;
+                }
+                .landing-hero {
+                    padding: 48px 20px;
+                }
+            }
+
+            /* ── Role Cards ── */
+            .role-card {
+                padding: 36px 28px 54px;
+                border: var(--border);
+                box-shadow: var(--shadow-lg);
+                cursor: pointer;
+                position: relative;
+                overflow: hidden;
+                transition:
+                    transform 0.1s,
+                    box-shadow 0.1s;
+                background: var(--white);
+            }
+            .role-card:hover {
+                transform: translate(-3px, -3px);
+                box-shadow: 9px 9px 0px var(--black);
+            }
+            .role-card:active {
+                transform: translate(3px, 3px);
+                box-shadow: 1px 1px 0px var(--black);
+            }
+
+            .role-card-student {
+                background: var(--white);
+            }
+            .role-card-admin {
+                background: var(--black);
+                color: var(--white);
+            }
+
+            .role-card-icon {
+                font-size: 2.5rem;
+                margin-bottom: 16px;
+                display: block;
+            }
+            .role-card-title {
+                font-family: var(--font-display);
+                font-size: 2.5rem;
+                font-weight: 800;
+                text-transform: uppercase;
+                letter-spacing: 0.01em;
+                line-height: 1;
+                margin-bottom: 12px;
+            }
+            .role-card-admin .role-card-title {
+                color: var(--yellow);
+            }
+            .role-card-desc {
+                font-size: 0.85rem;
+                line-height: 1.6;
+                color: #666;
+            }
+            .role-card-admin .role-card-desc {
+                color: rgba(255, 255, 255, 0.45);
+            }
+            .role-card-arrow {
+                position: absolute;
+                bottom: 20px;
+                right: 24px;
+                font-size: 1.5rem;
+                font-family: var(--font-display);
+                font-weight: 800;
+            }
+            .role-card-admin .role-card-arrow {
+                color: var(--yellow);
+            }
+
+            /* ═══════════════════════════════════════════
+   LOGIN SCREEN
+═══════════════════════════════════════════ */
+            #screen-login {
+                min-height: 100vh;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background: var(--cream);
+                padding: 24px;
+            }
+            .login-box {
+                width: 100%;
+                max-width: 460px;
+            }
+
+            .login-back {
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                font-family: var(--font-mono);
+                font-size: 0.7rem;
+                text-transform: uppercase;
+                letter-spacing: 0.1em;
+                cursor: pointer;
+                border: none;
+                background: none;
+                margin-bottom: 20px;
+                padding: 0;
+                color: var(--black);
+                font-weight: 700;
+            }
+            .login-back:hover {
+                text-decoration: underline;
+            }
+
+            .login-card {
+                padding: 40px 36px;
+                border: var(--border);
+                box-shadow: var(--shadow-lg);
+                background: var(--white);
+            }
+
+            .login-role-banner {
+                display: inline-block;
+                padding: 5px 13px;
+                border: var(--border);
+                font-family: var(--font-mono);
+                font-size: 0.63rem;
+                font-weight: 700;
+                text-transform: uppercase;
+                letter-spacing: 0.13em;
+                margin-bottom: 20px;
+            }
+            .login-role-banner-student {
+                background: var(--yellow);
+            }
+            .login-role-banner-admin {
+                background: var(--black);
+                color: var(--yellow);
+            }
+
+            .login-title {
+                font-family: var(--font-display);
+                font-size: 3.4rem;
+                font-weight: 800;
+                text-transform: uppercase;
+                letter-spacing: -0.02em;
+                line-height: 0.9;
+                margin-bottom: 12px;
+            }
+            .login-title-admin {
+                color: var(--blue);
+            }
+
+            .login-hint {
+                font-family: var(--font-mono);
+                font-size: 0.68rem;
+                text-transform: uppercase;
+                letter-spacing: 0.07em;
+                color: #999;
+                margin-bottom: 28px;
+                line-height: 1.6;
+            }
+
+            .form-group {
+                margin-bottom: 18px;
+            }
+
+            .login-lock-note {
+                display: flex;
+                align-items: flex-start;
+                gap: 10px;
+                padding: 11px 13px;
+                border: var(--border);
+                background: #fffce4;
+                margin-bottom: 18px;
+            }
+            .login-lock-note span {
+                font-family: var(--font-mono);
+                font-size: 0.66rem;
+                line-height: 1.6;
+                color: #666;
+            }
+
+            .error-msg {
+                padding: 10px 13px;
+                border: 2px solid var(--red);
+                background: #fff0f2;
+                font-family: var(--font-mono);
+                font-size: 0.68rem;
+                color: var(--red);
+                font-weight: 700;
+                text-transform: uppercase;
+                letter-spacing: 0.07em;
+                margin-bottom: 14px;
+                display: none;
+            }
+            .error-msg.show {
+                display: block;
+            }
+
+            /* ═══════════════════════════════════════════
+   DASHBOARD LAYOUT
+═══════════════════════════════════════════ */
+            .dashboard {
+                display: flex;
+                min-height: 100vh;
+            }
+
+            .sidebar {
+                width: 268px;
+                min-width: 268px;
+                border-right: var(--border);
+                display: flex;
+                flex-direction: column;
+                position: sticky;
+                top: 0;
+                height: 100vh;
+                overflow-y: auto;
+            }
+            .sidebar-student {
+                background: var(--yellow);
+            }
+            .sidebar-admin {
+                background: var(--black);
+                color: var(--white);
+            }
+
+            .sidebar-header {
+                padding: 24px 20px 20px;
+                border-bottom: var(--border);
+            }
+            .sidebar-logo {
+                font-family: var(--font-display);
+                font-size: 1.55rem;
+                font-weight: 800;
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+                line-height: 1;
+                margin-bottom: 5px;
+            }
+            .sidebar-admin .sidebar-logo {
+                color: var(--yellow);
+            }
+            .sidebar-role-tag {
+                font-family: var(--font-mono);
+                font-size: 0.6rem;
+                text-transform: uppercase;
+                letter-spacing: 0.13em;
+                opacity: 0.5;
+            }
+
+            .sidebar-user {
+                padding: 16px 20px;
+                border-bottom: var(--border);
+            }
+            .sidebar-user-name {
+                font-family: var(--font-display);
+                font-weight: 700;
+                font-size: 1rem;
+                margin-bottom: 3px;
+                word-break: break-word;
+            }
+            .sidebar-admin .sidebar-user-name {
+                color: var(--white);
+            }
+            .sidebar-user-meta {
+                font-family: var(--font-mono);
+                font-size: 0.62rem;
+                text-transform: uppercase;
+                letter-spacing: 0.08em;
+                opacity: 0.5;
+            }
+
+            .sidebar-nav {
+                flex: 1;
+                padding: 10px 0;
+            }
+            .sidebar-nav-item {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                padding: 12px 20px;
+                cursor: pointer;
+                font-family: var(--font-display);
+                font-size: 0.8rem;
+                font-weight: 700;
+                text-transform: uppercase;
+                letter-spacing: 0.06em;
+                border-left: 4px solid transparent;
+                transition: all 0.08s;
+                position: relative;
+            }
+            .sidebar-student .sidebar-nav-item:hover {
+                background: rgba(0, 0, 0, 0.08);
+                border-left-color: var(--black);
+            }
+            .sidebar-admin .sidebar-nav-item:hover {
+                background: rgba(255, 255, 255, 0.07);
+                border-left-color: var(--yellow);
+            }
+            .sidebar-nav-item.active-nav {
+                background: rgba(0, 0, 0, 0.1);
+                border-left-color: var(--black);
+            }
+            .sidebar-admin .sidebar-nav-item.active-nav {
+                background: rgba(255, 255, 255, 0.1);
+                border-left-color: var(--yellow);
+            }
+
+            .nav-count {
+                position: absolute;
+                right: 16px;
+                background: var(--red);
+                color: var(--white);
+                border: 2px solid var(--black);
+                font-family: var(--font-mono);
+                font-size: 0.58rem;
+                font-weight: 700;
+                padding: 1px 6px;
+                min-width: 22px;
+                text-align: center;
+            }
+
+            .sidebar-footer {
+                padding: 16px 20px;
+                border-top: var(--border);
+            }
+            .logout-btn {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                cursor: pointer;
+                background: none;
+                border: none;
+                font-family: var(--font-mono);
+                font-size: 0.65rem;
+                text-transform: uppercase;
+                letter-spacing: 0.1em;
+                font-weight: 700;
+                color: inherit;
+                padding: 0;
+            }
+            .sidebar-admin .logout-btn {
+                color: rgba(255, 255, 255, 0.4);
+            }
+            .logout-btn:hover {
+                text-decoration: underline;
+            }
+
+            .main-content {
+                flex: 1;
+                padding: 40px 44px;
+                overflow-y: auto;
+                background: var(--cream);
+            }
+
+            @media (max-width: 900px) {
+                .sidebar {
+                    width: 240px;
+                    min-width: 240px;
+                }
+                .main-content {
+                    padding: 28px 24px;
+                }
+            }
+            @media (max-width: 640px) {
+                .dashboard {
+                    flex-direction: column;
+                }
+                .sidebar {
+                    width: 100%;
+                    min-width: 0;
+                    height: auto;
+                    position: relative;
+                }
+                .sidebar-nav {
+                    display: flex;
+                    flex-wrap: wrap;
+                    padding: 8px;
+                }
+                .sidebar-nav-item {
+                    border-left: none;
+                    border-bottom: 3px solid transparent;
+                    flex: 1;
+                    min-width: 100px;
+                    justify-content: center;
+                    padding: 10px 8px;
+                    font-size: 0.72rem;
+                }
+            }
+
+            /* ── Page Header ── */
+            .page-header {
+                margin-bottom: 32px;
+            }
+            .page-header-top {
+                display: flex;
+                align-items: flex-start;
+                justify-content: space-between;
+                gap: 16px;
+                flex-wrap: wrap;
+            }
+            .page-title {
+                font-family: var(--font-display);
+                font-size: clamp(1.75rem, 4vw, 2.75rem);
+                font-weight: 800;
+                text-transform: uppercase;
+                letter-spacing: -0.01em;
+                line-height: 1;
+            }
+            .page-subtitle {
+                font-family: var(--font-mono);
+                font-size: 0.68rem;
+                text-transform: uppercase;
+                letter-spacing: 0.1em;
+                color: #999;
+                margin-top: 8px;
+            }
+
+            /* ── Stats Row ── */
+            .stats-row {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+                gap: 14px;
+                margin-bottom: 28px;
+            }
+            .stat-card {
+                padding: 20px 18px;
+                border: var(--border);
+                box-shadow: var(--shadow);
+                background: var(--white);
+            }
+            .stat-card-yellow {
+                background: var(--yellow);
+            }
+            .stat-card-blue {
+                background: var(--blue);
+                color: var(--white);
+            }
+            .stat-card-red {
+                background: var(--red);
+                color: var(--white);
+            }
+            .stat-value {
+                font-family: var(--font-display);
+                font-size: 2.8rem;
+                font-weight: 800;
+                line-height: 1;
+                margin-bottom: 4px;
+            }
+            .stat-label {
+                font-family: var(--font-mono);
+                font-size: 0.6rem;
+                text-transform: uppercase;
+                letter-spacing: 0.12em;
+                opacity: 0.6;
+            }
+
+            /* ── Compose Card ── */
+            .compose-card {
+                padding: 30px 28px;
+                border: var(--border);
+                box-shadow: var(--shadow-lg);
+                background: var(--white);
+                margin-bottom: 28px;
+            }
+            .compose-title {
+                font-family: var(--font-display);
+                font-size: 1.55rem;
+                font-weight: 800;
+                text-transform: uppercase;
+                letter-spacing: 0.02em;
+                margin-bottom: 24px;
+                display: flex;
+                align-items: center;
+                gap: 14px;
+            }
+            .compose-title::after {
+                content: "";
+                flex: 1;
+                height: 2px;
+                background: var(--black);
+            }
+
+            /* ── Category Buttons ── */
+            .category-grid {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 8px;
+                margin-bottom: 20px;
+            }
+            .category-btn {
+                padding: 7px 14px;
+                border: var(--border);
+                font-family: var(--font-mono);
+                font-size: 0.65rem;
+                font-weight: 700;
+                text-transform: uppercase;
+                letter-spacing: 0.08em;
+                cursor: pointer;
+                background: var(--cream);
+                color: var(--black);
+                transition: all 0.08s;
+            }
+            .category-btn:hover {
+                background: var(--black);
+                color: var(--white);
+            }
+            .category-btn.selected {
+                background: var(--black);
+                color: var(--white);
+                box-shadow: 3px 3px 0px var(--blue);
+            }
+
+            /* ── File Upload ── */
+            .file-upload-zone {
+                border: 2.5px dashed var(--black);
+                padding: 28px;
+                text-align: center;
+                cursor: pointer;
+                background: var(--cream);
+                margin-top: 8px;
+                transition: background 0.1s;
+                position: relative;
+            }
+            .file-upload-zone:hover {
+                background: #e8e5d5;
+            }
+            .file-upload-zone input[type="file"] {
+                position: absolute;
+                inset: 0;
+                opacity: 0;
+                cursor: pointer;
+                width: 100%;
+                height: 100%;
+            }
+            .file-upload-icon {
+                font-size: 2rem;
+                margin-bottom: 8px;
+            }
+            .file-upload-text {
+                font-family: var(--font-mono);
+                font-size: 0.68rem;
+                text-transform: uppercase;
+                letter-spacing: 0.08em;
+                color: #888;
+            }
+
+            .file-previews {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 10px;
+                margin-top: 12px;
+            }
+            .file-preview-item {
+                position: relative;
+                border: var(--border);
+                overflow: hidden;
+                background: var(--white);
+            }
+            .file-preview-item img,
+            .file-preview-item video {
+                width: 100px;
+                height: 80px;
+                object-fit: cover;
+                display: block;
+            }
+            .file-preview-item .file-name {
+                padding: 4px 8px;
+                font-family: var(--font-mono);
+                font-size: 0.58rem;
+                max-width: 100px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                border-top: 2px solid var(--black);
+            }
+            .file-remove {
+                position: absolute;
+                top: 4px;
+                right: 4px;
+                width: 20px;
+                height: 20px;
+                background: var(--red);
+                border: 1.5px solid var(--black);
+                color: var(--white);
+                font-size: 0.65rem;
+                font-weight: 700;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+            }
+
+            /* ── Message List ── */
+            .msg-list {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .msg-item {
+                padding: 18px 22px;
+                border: var(--border);
+                background: var(--white);
+                box-shadow: var(--shadow);
+                cursor: pointer;
+                transition:
+                    transform 0.08s,
+                    box-shadow 0.08s;
+                position: relative;
+            }
+            .msg-item:hover {
+                transform: translate(-2px, -2px);
+                box-shadow: 6px 6px 0px var(--black);
+            }
+            .msg-item.unread {
+                border-left: 4px solid var(--blue);
+            }
+            .msg-item.unread::before {
+                content: "NEW";
+                position: absolute;
+                top: 12px;
+                right: 14px;
+                font-family: var(--font-mono);
+                font-size: 0.57rem;
+                font-weight: 700;
+                letter-spacing: 0.1em;
+                text-transform: uppercase;
+                background: var(--blue);
+                color: var(--white);
+                padding: 2px 8px;
+                border: 1.5px solid var(--black);
+            }
+            .msg-item-header {
+                display: flex;
+                align-items: flex-start;
+                gap: 12px;
+                margin-bottom: 7px;
+                flex-wrap: wrap;
+            }
+            .msg-from {
+                font-family: var(--font-display);
+                font-weight: 700;
+                font-size: 0.95rem;
+                flex: 1;
+            }
+            .msg-time {
+                font-family: var(--font-mono);
+                font-size: 0.6rem;
+                color: #aaa;
+                white-space: nowrap;
+            }
+            .msg-subject {
+                font-family: var(--font-display);
+                font-weight: 700;
+                font-size: 0.95rem;
+                margin-bottom: 5px;
+            }
+            .msg-preview {
+                font-size: 0.84rem;
+                color: #777;
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                line-clamp: 2;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+                line-height: 1.5;
+            }
+            .msg-meta {
+                display: flex;
+                gap: 6px;
+                margin-top: 10px;
+                flex-wrap: wrap;
+            }
+
+            /* ═══════════════════════════════════════════
+   MESSAGE DETAIL MODAL
+═══════════════════════════════════════════ */
+            .modal-overlay {
+                position: fixed;
+                inset: 0;
+                background: rgba(0, 0, 0, 0.7);
+                z-index: 1000;
+                display: flex;
+                align-items: flex-start;
+                justify-content: center;
+                padding: 40px 20px;
+                overflow-y: auto;
+            }
+            .modal-overlay.hidden {
+                display: none !important;
+            }
+
+            .modal-box {
+                background: var(--white);
+                border: var(--border);
+                box-shadow: var(--shadow-lg);
+                width: 100%;
+                max-width: 720px;
+                position: relative;
+            }
+
+            .modal-header {
+                padding: 22px 28px 20px;
+                border-bottom: var(--border);
+                background: var(--yellow);
+                display: flex;
+                align-items: flex-start;
+                justify-content: space-between;
+                gap: 16px;
+            }
+            .modal-title {
+                font-family: var(--font-display);
+                font-size: 1.4rem;
+                font-weight: 800;
+                text-transform: uppercase;
+                letter-spacing: 0.01em;
+                line-height: 1.1;
+                flex: 1;
+            }
+            .modal-close {
+                width: 38px;
+                height: 38px;
+                border: var(--border);
+                background: var(--black);
+                color: var(--white);
+                font-size: 1rem;
+                font-weight: 700;
+                cursor: pointer;
+                flex-shrink: 0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-family: var(--font-display);
+                transition: background 0.08s;
+            }
+            .modal-close:hover {
+                background: var(--red);
+            }
+
+            .modal-body {
+                padding: 24px 28px;
+            }
+
+            .modal-from-info {
+                display: flex;
+                gap: 14px;
+                align-items: center;
+                padding: 12px 15px;
+                border: var(--border);
+                background: var(--cream);
+                margin-bottom: 18px;
+                flex-wrap: wrap;
+            }
+            .modal-avatar {
+                width: 42px;
+                height: 42px;
+                border: var(--border);
+                background: var(--yellow);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-family: var(--font-display);
+                font-size: 1.2rem;
+                font-weight: 800;
+                flex-shrink: 0;
+            }
+            .modal-sender {
+                flex: 1;
+            }
+            .modal-sender-name {
+                font-family: var(--font-display);
+                font-weight: 700;
+                font-size: 1rem;
+                margin-bottom: 2px;
+            }
+            .modal-sender-meta {
+                font-family: var(--font-mono);
+                font-size: 0.6rem;
+                color: #aaa;
+                letter-spacing: 0.07em;
+                text-transform: uppercase;
+            }
+
+            .modal-message-body {
+                padding: 15px 16px;
+                border: var(--border);
+                background: var(--cream);
+                line-height: 1.7;
+                font-size: 0.93rem;
+                margin-bottom: 18px;
+                white-space: pre-wrap;
+                word-break: break-word;
+            }
+
+            .modal-attachments {
+                margin-bottom: 18px;
+            }
+            .modal-attachments-title {
+                font-family: var(--font-mono);
+                font-size: 0.66rem;
+                text-transform: uppercase;
+                letter-spacing: 0.1em;
+                font-weight: 700;
+                margin-bottom: 10px;
+                padding-bottom: 6px;
+                border-bottom: 2px solid var(--black);
+            }
+            .modal-media-grid {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+            .modal-media-item {
+                border: var(--border);
+                overflow: hidden;
+                position: relative;
+            }
+            .modal-media-item img {
+                width: 160px;
+                height: 120px;
+                object-fit: cover;
+                display: block;
+            }
+            .modal-media-item video {
+                width: 280px;
+                max-width: 100%;
+                display: block;
+            }
+            .modal-media-label {
+                padding: 5px 10px;
+                font-family: var(--font-mono);
+                font-size: 0.57rem;
+                text-transform: uppercase;
+                letter-spacing: 0.08em;
+                border-top: 2px solid var(--black);
+                background: var(--cream);
+            }
+
+            .replies-section {
+                margin-top: 22px;
+            }
+            .replies-title {
+                font-family: var(--font-display);
+                font-size: 1.2rem;
+                font-weight: 800;
+                text-transform: uppercase;
+                letter-spacing: 0.02em;
+                margin-bottom: 14px;
+                display: flex;
+                align-items: center;
+                gap: 12px;
+            }
+            .replies-title::after {
+                content: "";
+                flex: 1;
+                height: 2px;
+                background: var(--black);
+            }
+
+            .reply-item {
+                padding: 14px 16px;
+                border: var(--border);
+                background: var(--cream);
+                margin-bottom: 8px;
+            }
+            .reply-header {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                margin-bottom: 8px;
+            }
+            .reply-from {
+                font-family: var(--font-display);
+                font-weight: 700;
+                font-size: 0.9rem;
+            }
+            .reply-role-tag {
+                padding: 2px 9px;
+                border: 1.5px solid var(--black);
+                font-family: var(--font-mono);
+                font-size: 0.57rem;
+                font-weight: 700;
+                text-transform: uppercase;
+                letter-spacing: 0.08em;
+                background: var(--blue);
+                color: var(--white);
+            }
+            .reply-time {
+                font-family: var(--font-mono);
+                font-size: 0.58rem;
+                color: #bbb;
+                margin-left: auto;
+            }
+            .reply-body {
+                font-size: 0.88rem;
+                line-height: 1.6;
+                white-space: pre-wrap;
+                word-break: break-word;
+            }
+
+            .reply-compose {
+                margin-top: 18px;
+                padding: 18px;
+                border: var(--border);
+                background: #fffce4;
+            }
+            .reply-compose-title {
+                font-family: var(--font-mono);
+                font-size: 0.66rem;
+                font-weight: 700;
+                text-transform: uppercase;
+                letter-spacing: 0.1em;
+                margin-bottom: 12px;
+            }
+
+            /* ── Empty State ── */
+            .empty-state {
+                text-align: center;
+                padding: 60px 24px;
+                border: 2.5px dashed var(--black);
+                background: var(--white);
+            }
+            .empty-state-icon {
+                font-size: 2.5rem;
+                margin-bottom: 16px;
+            }
+            .empty-state-title {
+                font-family: var(--font-display);
+                font-size: 1.8rem;
+                font-weight: 800;
+                text-transform: uppercase;
+                letter-spacing: 0.02em;
+                margin-bottom: 8px;
+            }
+            .empty-state-text {
+                font-family: var(--font-mono);
+                font-size: 0.7rem;
+                text-transform: uppercase;
+                letter-spacing: 0.09em;
+                color: #aaa;
+            }
+
+            /* ── Filter Bar ── */
+            .filter-bar {
+                display: flex;
+                gap: 8px;
+                flex-wrap: wrap;
+                margin-bottom: 22px;
+                padding: 13px 15px;
+                border: var(--border);
+                background: var(--white);
+                box-shadow: var(--shadow);
+            }
+            .filter-btn {
+                padding: 6px 13px;
+                border: var(--border);
+                font-family: var(--font-mono);
+                font-size: 0.66rem;
+                font-weight: 700;
+                text-transform: uppercase;
+                letter-spacing: 0.08em;
+                cursor: pointer;
+                background: var(--cream);
+                color: var(--black);
+                transition: all 0.08s;
+            }
+            .filter-btn:hover {
+                background: var(--black);
+                color: var(--white);
+            }
+            .filter-btn.active-filter {
+                background: var(--blue);
+                color: var(--white);
+                border-color: var(--blue);
+                box-shadow: 3px 3px 0px var(--black);
+            }
+
+            /* ── Animations ── */
+            @keyframes fadeIn {
+                from {
+                    opacity: 0;
+                    transform: translateY(12px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+            .animate-in {
+                animation: fadeIn 0.22s ease forwards;
+            }
+
+            @keyframes slideUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(28px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+            .slide-up {
+                animation: slideUp 0.28s ease forwards;
+            }
+
+            /* ── Delete / Select ── */
+            .msg-item.selected {
+                background: #fff0f2;
+                border-color: var(--red);
+                box-shadow: 4px 4px 0px var(--red);
+            }
+            .msg-item.selectable {
+                padding-left: 50px;
+            }
+            .msg-checkbox {
+                position: absolute;
+                top: 50%;
+                left: 14px;
+                transform: translateY(-50%);
+                width: 22px;
+                height: 22px;
+                border: 2px solid var(--black);
+                background: var(--white);
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 0.75rem;
+                font-weight: 900;
+                z-index: 10;
+                flex-shrink: 0;
+                transition: background 0.08s, border-color 0.08s;
+            }
+            .msg-checkbox.checked {
+                background: var(--red);
+                color: var(--white);
+                border-color: var(--red);
+            }
+            .msg-delete-btn {
+                display: inline-flex;
+                align-items: center;
+                gap: 5px;
+                padding: 4px 11px;
+                border: var(--border);
+                background: var(--white);
+                color: var(--red);
+                font-family: var(--font-mono);
+                font-size: 0.6rem;
+                font-weight: 700;
+                text-transform: uppercase;
+                letter-spacing: 0.08em;
+                cursor: pointer;
+                transition: all 0.08s;
+                margin-top: 10px;
+            }
+            .msg-delete-btn:hover {
+                background: var(--red);
+                color: var(--white);
+                border-color: var(--red);
+            }
+            .bulk-bar {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                padding: 11px 15px;
+                border: 2px solid var(--red);
+                background: #fff0f2;
+                box-shadow: 4px 4px 0px var(--red);
+                margin-bottom: 14px;
+                flex-wrap: wrap;
+            }
+            .bulk-bar-count {
+                font-family: var(--font-mono);
+                font-size: 0.7rem;
+                font-weight: 700;
+                text-transform: uppercase;
+                letter-spacing: 0.08em;
+                flex: 1;
+                color: var(--red);
+            }
+
+            /* ── Toast ── */
+            .toast {
+                position: fixed;
+                bottom: 28px;
+                right: 28px;
+                padding: 13px 20px;
+                border: var(--border);
+                box-shadow: var(--shadow-lg);
+                background: var(--green);
+                font-family: var(--font-mono);
+                font-size: 0.75rem;
+                font-weight: 700;
+                text-transform: uppercase;
+                letter-spacing: 0.08em;
+                color: var(--black);
+                z-index: 2000;
+                transform: translateY(80px);
+                opacity: 0;
+                transition: all 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+            }
+            .toast.show {
+                transform: translateY(0);
+                opacity: 1;
+            }
+            .toast.error {
+                background: var(--red);
+                color: var(--white);
+            }
+
+            /* ── Config Banner ── */
+            .config-banner {
+                padding: 13px 16px;
+                border: 2px solid var(--yellow);
+                background: #fffce4;
+                box-shadow: var(--shadow);
+                margin-bottom: 22px;
+                font-family: var(--font-mono);
+                font-size: 0.68rem;
+                text-transform: uppercase;
+                letter-spacing: 0.08em;
+                line-height: 1.55;
+            }
+            .config-banner strong {
+                font-weight: 700;
+            }
+
+            /* ── Password field with show/hide toggle ── */
+            .password-wrap {
+                position: relative;
+            }
+            .password-wrap .nb-input {
+                padding-right: 50px;
+            }
+            .password-toggle {
+                position: absolute;
+                top: 0;
+                right: 0;
+                bottom: 0;
+                width: 46px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background: none;
+                border: none;
+                border-left: var(--border);
+                cursor: pointer;
+                font-size: 1.05rem;
+                color: #888;
+                transition:
+                    color 0.1s,
+                    background 0.1s;
+            }
+            .password-toggle:hover {
+                color: var(--black);
+                background: var(--cream);
+            }
+        </style>
+    </head>
+    <body>
+        <!-- ══════════════════════════════════════════
+     SCREEN: LANDING
+══════════════════════════════════════════ -->
+        <div id="screen-landing" class="screen">
+            <div class="ticker">
+                <span class="ticker-inner"
+                    >✦ OFFICIAL SCHOOL COMMUNICATION PLATFORM ✦ SEND MESSAGES TO
+                    TEACHERS & DIRECTORS ✦ SECURE. DIRECT. TRANSPARENT. ✦
+                    OFFICIAL SCHOOL COMMUNICATION PLATFORM ✦ SEND MESSAGES TO
+                    TEACHERS & DIRECTORS ✦</span
+                >
+            </div>
+            <header class="landing-header">
+                <div>
+                    <div class="landing-logo">WOL<span>ISO</span></div>
+                    <div class="landing-tagline">Official School Messenger</div>
+                </div>
+                <div
+                    style="
+                        font-family: var(--font-mono);
+                        font-size: 0.65rem;
+                        color: #888;
+                        text-align: right;
+                    "
+                >
+                    Version 1.0<br />Secure Platform
+                </div>
+            </header>
+
+            <div class="landing-hero">
+                <div class="landing-title">
+                    STUDENT<br /><em>VOICE</em><br />PLATFORM
+                </div>
+                <p class="landing-subtitle">
+                    Select your role to enter the platform
+                </p>
+
+                <div class="landing-cards">
+                    <div
+                        class="role-card role-card-student"
+                        onclick="showLoginScreen('student')"
+                    >
+                        <span class="role-card-icon">🎒</span>
+                        <div class="role-card-title">Student</div>
+                        <p class="role-card-desc">
+                            Send messages, complaints, suggestions, and media to
+                            your teachers and directors.
+                        </p>
+                        <span class="role-card-arrow">→</span>
+                    </div>
+                    <div
+                        class="role-card role-card-admin"
+                        onclick="showLoginScreen('admin')"
+                    >
+                        <span class="role-card-icon">🏫</span>
+                        <div class="role-card-title">Admin</div>
+                        <p class="role-card-desc">
+                            Teachers & Directors. View all messages, respond to
+                            students, manage platform.
+                        </p>
+                        <span class="role-card-arrow">→</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ══════════════════════════════════════════
+     SCREEN: LOGIN
+══════════════════════════════════════════ -->
+        <div id="screen-login" class="screen hidden">
+            <div
+                style="
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    min-height: 100vh;
+                    background: var(--cream);
+                    padding: 24px;
+                "
+            >
+                <div style="width: 100%; max-width: 480px">
+                    <button class="login-back" onclick="showLanding()">
+                        ← Back
+                    </button>
+
+                    <!-- STUDENT LOGIN -->
+                    <div id="login-student-form" class="login-card animate-in">
+                        <div
+                            class="login-role-banner login-role-banner-student"
+                        >
+                            Student Access
+                        </div>
+                        <div class="login-title">SIGN<br />IN.</div>
+                        <p class="login-hint">
+                            First visit? Your account will be created
+                            automatically. Returning? Use the same password to
+                            log in from any device.
+                        </p>
+
+                        <div id="student-error" class="error-msg"></div>
+
+                        <div class="form-group">
+                            <label class="nb-label">Full Name</label>
+                            <input
+                                class="nb-input"
+                                id="student-name"
+                                type="text"
+                                placeholder="e.g. Babi Kedir"
+                                autocomplete="name"
+                            />
+                        </div>
+                        <div class="form-group">
+                            <label class="nb-label">Grade / Class</label>
+                            <select class="nb-select" id="student-grade">
+                                <option>Grade 9</option>
+                                <option>Grade 10</option>
+                                <option>Grade 11</option>
+                                <option>Grade 12</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="nb-label"
+                                >Student ID
+                                <span style="opacity: 0.5; font-size: 0.65rem"
+                                    >(optional)</span
+                                ></label
+                            >
+                            <input
+                                class="nb-input"
+                                id="student-id"
+                                type="text"
+                                placeholder="e.g. STU-0042"
+                                autocomplete="off"
+                            />
+                        </div>
+                        <div class="form-group">
+                            <label class="nb-label">Password</label>
+                            <div class="password-wrap">
+                                <input
+                                    class="nb-input"
+                                    id="student-password"
+                                    type="password"
+                                    placeholder="Create or enter your password"
+                                    autocomplete="current-password"
+                                />
+                                <button
+                                    class="password-toggle"
+                                    type="button"
+                                    onclick="
+                                        togglePassword('student-password', this)
+                                    "
+                                    tabindex="-1"
+                                    aria-label="Show/hide password"
+                                >
+                                    &#128065;
+                                </button>
+                            </div>
+                        </div>
+                        <button
+                            class="nb-btn nb-btn-blue nb-btn-full nb-btn-lg"
+                            onclick="loginStudent()"
+                        >
+                            Enter Platform →
+                        </button>
+                    </div>
+
+                    <!-- ADMIN LOGIN -->
+                    <div
+                        id="login-admin-form"
+                        class="login-card animate-in hidden"
+                    >
+                        <div class="login-role-banner login-role-banner-admin">
+                            Admin Access
+                        </div>
+                        <div class="login-title login-title-admin">
+                            ADMIN<br />LOGIN.
+                        </div>
+                        <p class="login-hint">
+                            Directors and Teachers only. Password required.
+                        </p>
+
+                        <div class="login-lock-note">
+                            <span>🔒</span>
+                            <span
+                                >Admin password is set by your school director.
+                                Contact IT support if you don't have it.</span
+                            >
+                        </div>
+
+                        <div id="admin-error" class="error-msg">
+                            Incorrect password or missing fields.
+                        </div>
+
+                        <div class="form-group">
+                            <label class="nb-label">Your Full Name</label>
+                            <input
+                                class="nb-input"
+                                id="admin-name"
+                                type="text"
+                                placeholder="e.g. Ato Girma Tesfaye"
+                            />
+                        </div>
+                        <div class="form-group">
+                            <label class="nb-label">Your Role</label>
+                            <select class="nb-select" id="admin-role">
+                                <option value="">— Select role —</option>
+                                <option value="Director">Director</option>
+                                <option value="Teacher">Teacher</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="nb-label">Admin Password</label>
+                            <div class="password-wrap">
+                                <input
+                                    class="nb-input"
+                                    id="admin-password"
+                                    type="password"
+                                    placeholder="••••••••"
+                                    autocomplete="current-password"
+                                />
+                                <button
+                                    class="password-toggle"
+                                    type="button"
+                                    onclick="
+                                        togglePassword('admin-password', this)
+                                    "
+                                    tabindex="-1"
+                                    aria-label="Show/hide password"
+                                >
+                                    &#128065;
+                                </button>
+                            </div>
+                        </div>
+                        <button
+                            class="nb-btn nb-btn-blue nb-btn-full nb-btn-lg"
+                            onclick="loginAdmin()"
+                        >
+                            Access Dashboard →
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ══════════════════════════════════════════
+     SCREEN: STUDENT DASHBOARD
+══════════════════════════════════════════ -->
+        <div id="screen-student" class="screen hidden">
+            <div class="dashboard">
+                <aside class="sidebar sidebar-student">
+                    <div class="sidebar-header">
+                        <div class="sidebar-logo">MDRASA</div>
+                        <div class="sidebar-role-tag">Student Portal</div>
+                    </div>
+                    <div class="sidebar-user">
+                        <div class="sidebar-user-name" id="s-name-display">
+                            —
+                        </div>
+                        <div class="sidebar-user-meta" id="s-grade-display">
+                            —
+                        </div>
+                    </div>
+                    <nav class="sidebar-nav">
+                        <div
+                            class="sidebar-nav-item active-nav"
+                            onclick="sStudentTab('compose')"
+                        >
+                            <span>✉</span> New Message
+                        </div>
+                        <div
+                            class="sidebar-nav-item"
+                            onclick="sStudentTab('sent')"
+                        >
+                            <span>📤</span> My Messages
+                            <span class="nav-count hidden" id="s-reply-badge"
+                                >0</span
+                            >
+                        </div>
+                    </nav>
+                    <div class="sidebar-footer">
+                        <button class="logout-btn" onclick="logout()">
+                            ✕ Sign Out
+                        </button>
+                    </div>
+                </aside>
+
+                <main class="main-content" id="student-main">
+                    <!-- Compose Tab -->
+                    <div id="student-compose-tab">
+                        <div class="page-header">
+                            <div class="page-header-top">
+                                <div>
+                                    <div class="page-title">NEW MESSAGE</div>
+                                    <div class="page-subtitle">
+                                        Send directly to your teachers or school
+                                        directors
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="compose-card">
+                            <div class="compose-title">Compose</div>
+
+                            <div class="form-group">
+                                <label class="nb-label"
+                                    >Category — What kind of message is
+                                    this?</label
+                                >
+                                <div class="category-grid">
+                                    <button
+                                        class="category-btn selected"
+                                        data-cat="General"
+                                        onclick="selectCat(this)"
+                                    >
+                                        💬 General
+                                    </button>
+                                    <button
+                                        class="category-btn"
+                                        data-cat="Complaint"
+                                        onclick="selectCat(this)"
+                                    >
+                                        ⚠️ Complaint
+                                    </button>
+                                    <button
+                                        class="category-btn"
+                                        data-cat="Suggestion"
+                                        onclick="selectCat(this)"
+                                    >
+                                        💡 Suggestion
+                                    </button>
+                                    <button
+                                        class="category-btn"
+                                        data-cat="Question"
+                                        onclick="selectCat(this)"
+                                    >
+                                        ❓ Question
+                                    </button>
+                                    <button
+                                        class="category-btn"
+                                        data-cat="Urgent"
+                                        onclick="selectCat(this)"
+                                    >
+                                        🚨 Urgent
+                                    </button>
+                                    <button
+                                        class="category-btn"
+                                        data-cat="Media Report"
+                                        onclick="selectCat(this)"
+                                    >
+                                        📸 Media Report
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="nb-label">Subject</label>
+                                <input
+                                    class="nb-input"
+                                    id="compose-subject"
+                                    type="text"
+                                    placeholder="Brief subject line..."
+                                />
+                            </div>
+
+                            <div class="form-group">
+                                <label class="nb-label">Message</label>
+                                <textarea
+                                    class="nb-textarea"
+                                    id="compose-body"
+                                    placeholder="Write your message here. Be clear and specific..."
+                                    rows="6"
+                                ></textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="nb-label"
+                                    >Attach Photos or Videos
+                                    <span
+                                        style="opacity: 0.5; font-size: 0.65rem"
+                                        >(optional — max 10MB each)</span
+                                    ></label
+                                >
+                                <div class="file-upload-zone" id="upload-zone">
+                                    <input
+                                        type="file"
+                                        id="file-input"
+                                        accept="image/*,video/*"
+                                        multiple
+                                        onchange="handleFiles(this.files)"
+                                    />
+                                    <div class="file-upload-icon">📎</div>
+                                    <div class="file-upload-text">
+                                        Click to upload or drag & drop<br />Images
+                                        and videos accepted
+                                    </div>
+                                </div>
+                                <div
+                                    class="file-previews"
+                                    id="file-previews"
+                                ></div>
+                            </div>
+
+                            <div class="nb-divider"></div>
+                            <div
+                                style="
+                                    display: flex;
+                                    gap: 12px;
+                                    flex-wrap: wrap;
+                                "
+                            >
+                                <button
+                                    class="nb-btn nb-btn-black nb-btn-lg"
+                                    onclick="sendMessage()"
+                                >
+                                    📨 Send Message
+                                </button>
+                                <button
+                                    class="nb-btn nb-btn-white"
+                                    onclick="clearCompose()"
+                                >
+                                    Clear
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sent Tab -->
+                    <div id="student-sent-tab" class="hidden">
+                        <div class="page-header">
+                            <div class="page-title">MY MESSAGES</div>
+                            <div class="page-subtitle">
+                                Your sent messages and admin replies
+                            </div>
+                        </div>
+                        <div id="student-sent-list"></div>
+                    </div>
+                </main>
+            </div>
+        </div>
+
+        <!-- ══════════════════════════════════════════
+     SCREEN: ADMIN DASHBOARD
+══════════════════════════════════════════ -->
+        <div id="screen-admin" class="screen hidden">
+            <div class="dashboard">
+                <aside class="sidebar sidebar-admin">
+                    <div class="sidebar-header">
+                        <div class="sidebar-logo">MDRASA</div>
+                        <div class="sidebar-role-tag">Admin Portal</div>
+                    </div>
+                    <div class="sidebar-user">
+                        <div class="sidebar-user-name" id="a-name-display">
+                            —
+                        </div>
+                        <div class="sidebar-user-meta" id="a-role-display">
+                            —
+                        </div>
+                    </div>
+                    <nav class="sidebar-nav">
+                        <div
+                            class="sidebar-nav-item active-nav"
+                            onclick="sAdminTab('inbox')"
+                        >
+                            <span>📥</span> Inbox
+                            <span class="nav-count hidden" id="a-unread-badge"
+                                >0</span
+                            >
+                        </div>
+                        <div
+                            class="sidebar-nav-item"
+                            onclick="sAdminTab('urgent')"
+                        >
+                            <span>🚨</span> Urgent
+                            <span class="nav-count hidden" id="a-urgent-badge"
+                                >0</span
+                            >
+                        </div>
+                        <div
+                            class="sidebar-nav-item"
+                            onclick="sAdminTab('resolved')"
+                        >
+                            <span>✅</span> Resolved
+                        </div>
+                    </nav>
+                    <div class="sidebar-footer">
+                        <button class="logout-btn" onclick="logout()">
+                            ✕ Sign Out
+                        </button>
+                    </div>
+                </aside>
+
+                <main class="main-content">
+                    <!-- Inbox Tab -->
+                    <div id="admin-inbox-tab">
+                        <div class="page-header">
+                            <div class="page-header-top">
+                                <div>
+                                    <div class="page-title">INBOX</div>
+                                    <div class="page-subtitle">
+                                        All student messages — click to read and
+                                        reply
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="stats-row" id="admin-stats"></div>
+
+                        <div class="filter-bar">
+                            <span
+                                style="
+                                    font-family: var(--font-mono);
+                                    font-size: 0.7rem;
+                                    align-self: center;
+                                    margin-right: 4px;
+                                    opacity: 0.6;
+                                "
+                                >Filter:</span
+                            >
+                            <button
+                                class="filter-btn active-filter"
+                                onclick="filterMsgs(this, 'all')"
+                            >
+                                All
+                            </button>
+                            <button
+                                class="filter-btn"
+                                onclick="filterMsgs(this, 'unread')"
+                            >
+                                Unread
+                            </button>
+                            <button
+                                class="filter-btn"
+                                onclick="filterMsgs(this, 'Complaint')"
+                            >
+                                Complaints
+                            </button>
+                            <button
+                                class="filter-btn"
+                                onclick="filterMsgs(this, 'Suggestion')"
+                            >
+                                Suggestions
+                            </button>
+                            <button
+                                class="filter-btn"
+                                onclick="filterMsgs(this, 'Question')"
+                            >
+                                Questions
+                            </button>
+                            <button
+                                class="filter-btn"
+                                onclick="filterMsgs(this, 'Media Report')"
+                            >
+                                Media
+                            </button>
+                            <button
+                                class="filter-btn"
+                                onclick="filterMsgs(this, 'Urgent')"
+                            >
+                                Urgent
+                            </button>
+                        </div>
+
+                        <div id="admin-msg-list"></div>
+                    </div>
+
+                    <!-- Urgent Tab -->
+                    <div id="admin-urgent-tab" class="hidden">
+                        <div class="page-header">
+                            <div class="page-title">URGENT</div>
+                            <div class="page-subtitle">
+                                Messages marked urgent — prioritize these
+                            </div>
+                        </div>
+                        <div id="admin-urgent-list"></div>
+                    </div>
+
+                    <!-- Resolved Tab -->
+                    <div id="admin-resolved-tab" class="hidden">
+                        <div class="page-header">
+                            <div class="page-title">RESOLVED</div>
+                            <div class="page-subtitle">
+                                Messages you have replied to
+                            </div>
+                        </div>
+                        <div id="admin-resolved-list"></div>
+                    </div>
+                </main>
+            </div>
+        </div>
+
+        <!-- ══════════════════════════════════════════
+     MESSAGE DETAIL MODAL
+══════════════════════════════════════════ -->
+        <div
+            class="modal-overlay hidden"
+            id="msg-modal"
+            onclick="closeModalOnOverlay(event)"
+        >
+            <div class="modal-box">
+                <div class="modal-header">
+                    <div>
+                        <div class="modal-title" id="modal-subject">—</div>
+                        <div
+                            style="margin-top: 6px"
+                            id="modal-meta-badges"
+                        ></div>
+                    </div>
+                    <button class="modal-close" onclick="closeModal()">
+                        ✕
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="modal-from-info">
+                        <div class="modal-avatar" id="modal-avatar">?</div>
+                        <div class="modal-sender">
+                            <div
+                                class="modal-sender-name"
+                                id="modal-sender-name"
+                            >
+                                —
+                            </div>
+                            <div
+                                class="modal-sender-meta"
+                                id="modal-sender-meta"
+                            >
+                                —
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-message-body" id="modal-body-text"></div>
+
+                    <div
+                        class="modal-attachments hidden"
+                        id="modal-attachments"
+                    >
+                        <div class="modal-attachments-title">
+                            📎 Attachments
+                        </div>
+                        <div
+                            class="modal-media-grid"
+                            id="modal-media-grid"
+                        ></div>
+                    </div>
+
+                    <div
+                        class="replies-section"
+                        id="modal-replies-section"
+                    ></div>
+
+                    <!-- Admin reply compose (only shown to admins) -->
+                    <div class="reply-compose hidden" id="admin-reply-compose">
+                        <div class="reply-compose-title">
+                            ✏️ Reply to this message
+                        </div>
+                        <textarea
+                            class="nb-textarea"
+                            id="reply-textarea"
+                            placeholder="Type your reply to the student..."
+                            rows="4"
+                        ></textarea>
+                        <div
+                            style="
+                                margin-top: 12px;
+                                display: flex;
+                                gap: 10px;
+                                flex-wrap: wrap;
+                            "
+                        >
+                            <button
+                                class="nb-btn nb-btn-blue"
+                                onclick="sendReply()"
+                            >
+                                Send Reply →
+                            </button>
+                            <button
+                                class="nb-btn nb-btn-white nb-btn-sm"
+                                onclick="markResolved()"
+                            >
+                                ✅ Mark Resolved
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TOAST -->
+        <div class="toast" id="toast"></div>
+
+        <!-- ══════════════════════════════════════════
+     JAVASCRIPT
+══════════════════════════════════════════ -->
+        <script>
+            /* ─── CONFIGURATION ─────────────────────────────
+   Admin password validation is handled by the backend.
+   No secrets live in this file.
+──────────────────────────────────────────────── */
+            const CONFIG = {
+                SCHOOL_NAME: "WFSBSS School",
+                // ▶ Change API_BASE to your server's address when deploying.
+                //   In development this is http://localhost:5000 (must match backend PORT in .env).
+                API_BASE: "https://wfsbssbackend-production.up.railway.app",
+            };
+
+            /* ─── STATE ─────────────────────────────────── */
+            let currentUser = null; // { name, grade, id, role: 'student'|'admin', adminRole }
+            let attachedFiles = []; // [{ name, type, dataURL }]
+            let selectedCategory = "General";
+            let activeMessageId = null;
+            let currentFilter = "all";
+            let selectedMessages = new Set(); // tracks checked message IDs
+
+            /* ─── AUTH HELPERS ───────────────────────────── */
+
+            // Returns headers for every authenticated API request.
+            // The JWT token is stored in localStorage only so the page
+            // survives a manual refresh. It holds NO sensitive user data.
+            function authHeaders() {
+                return {
+                    "Content-Type": "application/json",
+                    Authorization:
+                        "Bearer " + (localStorage.getItem("auth_token") || ""),
+                };
+            }
+
+            // Thin wrapper: throws on HTTP errors so callers can catch uniformly.
+            async function apiFetch(path, options = {}) {
+                const res = await fetch(CONFIG.API_BASE + path, options);
+                if (!res.ok) {
+                    const err = await res
+                        .json()
+                        .catch(() => ({ message: "Server error" }));
+                    throw new Error(err.message || "Request failed");
+                }
+                return res.json();
+            }
+
+            /* ─── SHOW / HIDE PASSWORD ───────────────────────────────────────────────── */
+            function togglePassword(inputId, btn) {
+                const input = document.getElementById(inputId);
+                if (input.type === "password") {
+                    input.type = "text";
+                    btn.innerHTML = "&#128584;"; // 🙈
+                } else {
+                    input.type = "password";
+                    btn.innerHTML = "&#128065;"; // 👁
+                }
+            }
+
+            /* ─── REMOVED: localStorage database simulation ─
+   getMessages()   → replaced by GET   /api/messages
+   saveMessages()  → replaced by POST  /api/messages
+   addMessage()    → replaced by POST  /api/messages
+   updateMessage() → replaced by PATCH /api/messages/:id
+────────────────────────────────────────────────── */
+
+            /* ─── NAVIGATION ────────────────────────────── */
+            function showLanding() {
+                hideAll();
+                document
+                    .getElementById("screen-landing")
+                    .classList.remove("hidden");
+            }
+
+            function showLoginScreen(role) {
+                hideAll();
+                document
+                    .getElementById("screen-login")
+                    .classList.remove("hidden");
+                document
+                    .getElementById("login-student-form")
+                    .classList.toggle("hidden", role !== "student");
+                document
+                    .getElementById("login-admin-form")
+                    .classList.toggle("hidden", role !== "admin");
+            }
+
+            function hideAll() {
+                [
+                    "screen-landing",
+                    "screen-login",
+                    "screen-student",
+                    "screen-admin",
+                ].forEach((id) =>
+                    document.getElementById(id).classList.add("hidden"),
+                );
+            }
+
+            /* ─── LOGIN ─────────────────────────────────── */
+            // ── API CALL: POST /api/auth/login (role: student) ──
+            // First visit  → registers the student (creates account with hashed password on the server).
+            // Return visit → verifies the stored password. Works from any device / browser.
+            async function loginStudent() {
+                const name = document
+                    .getElementById("student-name")
+                    .value.trim();
+                const grade = document.getElementById("student-grade").value;
+                const id = document.getElementById("student-id").value.trim();
+                const password =
+                    document.getElementById("student-password").value;
+                const err = document.getElementById("student-error");
+
+                if (!name || !grade || !password) {
+                    err.textContent =
+                        "Name, grade, and password are all required.";
+                    err.classList.add("show");
+                    return;
+                }
+                err.classList.remove("show");
+
+                try {
+                    const data = await apiFetch("/api/auth/login", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            name,
+                            grade,
+                            studentId: id || null,
+                            password,
+                            role: "student",
+                        }),
+                    });
+
+                    localStorage.setItem("auth_token", data.token);
+                    currentUser = data.user; // { name, grade, id, role: "student" }
+
+                    hideAll();
+                    document
+                        .getElementById("screen-student")
+                        .classList.remove("hidden");
+                    document.getElementById("s-name-display").textContent =
+                        currentUser.name;
+                    document.getElementById("s-grade-display").textContent =
+                        currentUser.grade +
+                        (currentUser.id && currentUser.id !== "—"
+                            ? " · " + currentUser.id
+                            : "");
+                    sStudentTab("compose");
+                } catch (e) {
+                    err.textContent =
+                        e.message ||
+                        "Login failed. Please check your details and try again.";
+                    err.classList.add("show");
+                }
+            }
+
+            // ── NEW API CALL: POST /api/auth/login (role: admin) ──
+            // Password is validated server-side ONLY. No password logic lives here.
+            async function loginAdmin() {
+                const name = document.getElementById("admin-name").value.trim();
+                const adminRole = document.getElementById("admin-role").value;
+                const password =
+                    document.getElementById("admin-password").value;
+                const err = document.getElementById("admin-error");
+
+                if (!name || !adminRole || !password) {
+                    err.classList.add("show");
+                    return;
+                }
+                err.classList.remove("show");
+
+                try {
+                    const data = await apiFetch("/api/auth/login", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            name,
+                            adminRole,
+                            password,
+                            role: "admin",
+                        }),
+                    });
+
+                    localStorage.setItem("auth_token", data.token);
+                    currentUser = data.user; // backend returns { name, role: "admin", adminRole }
+
+                    hideAll();
+                    document
+                        .getElementById("screen-admin")
+                        .classList.remove("hidden");
+                    document.getElementById("a-name-display").textContent =
+                        currentUser.name;
+                    document.getElementById("a-role-display").textContent =
+                        currentUser.adminRole;
+                    sAdminTab("inbox");
+                    renderAdminInbox("all");
+                } catch (e) {
+                    err.textContent =
+                        e.message ||
+                        "Incorrect password or invalid credentials.";
+                    err.classList.add("show");
+                }
+            }
+
+            function logout() {
+                currentUser = null;
+                attachedFiles = [];
+                selectedCategory = "General";
+                localStorage.removeItem("auth_token");
+                document.getElementById("student-name").value = "";
+                document.getElementById("student-grade").value = "";
+                document.getElementById("student-id").value = "";
+                document.getElementById("student-password").value = "";
+                document.getElementById("admin-name").value = "";
+                document.getElementById("admin-role").value = "";
+                document.getElementById("admin-password").value = "";
+                showLanding();
+            }
+
+            /* ─── STUDENT TABS ──────────────────────────── */
+            function sStudentTab(tab) {
+                document
+                    .getElementById("student-compose-tab")
+                    .classList.toggle("hidden", tab !== "compose");
+                document
+                    .getElementById("student-sent-tab")
+                    .classList.toggle("hidden", tab !== "sent");
+                document
+                    .querySelectorAll("#screen-student .sidebar-nav-item")
+                    .forEach((el, i) => {
+                        el.classList.toggle(
+                            "active-nav",
+                            (tab === "compose" && i === 0) ||
+                                (tab === "sent" && i === 1),
+                        );
+                    });
+                if (tab === "sent") { selectedMessages.clear(); renderStudentSent(); }
+            }
+
+            /* ─── ADMIN TABS ────────────────────────────── */
+            function sAdminTab(tab) {
+                ["inbox", "urgent", "resolved"].forEach((t) => {
+                    document
+                        .getElementById("admin-" + t + "-tab")
+                        .classList.toggle("hidden", t !== tab);
+                });
+                document
+                    .querySelectorAll("#screen-admin .sidebar-nav-item")
+                    .forEach((el, i) => {
+                        const tabs = ["inbox", "urgent", "resolved"];
+                        el.classList.toggle("active-nav", tabs[i] === tab);
+                    });
+                if (tab === "inbox") renderAdminInbox(currentFilter);
+                // ── NEW API CALL: GET /api/messages?category=Urgent&status[ne]=resolved ──
+                if (tab === "urgent")
+                    fetchAndRenderAdminList(
+                        "admin-urgent-list",
+                        "?category=Urgent&excludeStatus=resolved",
+                    );
+                // ── NEW API CALL: GET /api/messages?status=resolved ──
+                if (tab === "resolved")
+                    fetchAndRenderAdminList(
+                        "admin-resolved-list",
+                        "?status=resolved",
+                    );
+            }
+
+            /* ─── CATEGORY SELECT ───────────────────────── */
+            function selectCat(btn) {
+                document
+                    .querySelectorAll(".category-btn")
+                    .forEach((b) => b.classList.remove("selected"));
+                btn.classList.add("selected");
+                selectedCategory = btn.dataset.cat;
+            }
+
+            /* ─── FILE UPLOAD ───────────────────────────── */
+            function handleFiles(files) {
+                [...files].forEach((file) => {
+                    if (file.size > 10 * 1024 * 1024) {
+                        showToast(
+                            "File too large: " + file.name + " (max 10MB)",
+                            true,
+                        );
+                        return;
+                    }
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        attachedFiles.push({
+                            name: file.name,
+                            type: file.type,
+                            dataURL: e.target.result,
+                        });
+                        renderFilePreviews();
+                    };
+                    reader.readAsDataURL(file);
+                });
+            }
+
+            function renderFilePreviews() {
+                const zone = document.getElementById("file-previews");
+                zone.innerHTML = attachedFiles
+                    .map(
+                        (f, i) => `
+    <div class="file-preview-item">
+      ${
+          f.type.startsWith("image/")
+              ? `<img src="${f.dataURL}" alt="${f.name}">`
+              : `<video src="${f.dataURL}" muted playsinline style="width:100px;height:80px;object-fit:cover;"></video>`
+      }
+      <div class="file-name">${f.name}</div>
+      <div class="file-remove" onclick="removeFile(${i})">✕</div>
+    </div>
+  `,
+                    )
+                    .join("");
+            }
+
+            function removeFile(i) {
+                attachedFiles.splice(i, 1);
+                renderFilePreviews();
+            }
+
+            /* ─── SEND MESSAGE ──────────────────────────── */
+            // ── NEW API CALL: POST /api/messages ──
+            async function sendMessage() {
+                const subject = document
+                    .getElementById("compose-subject")
+                    .value.trim();
+                const body = document
+                    .getElementById("compose-body")
+                    .value.trim();
+                if (!subject || !body) {
+                    showToast("Please fill in Subject and Message.", true);
+                    return;
+                }
+
+                const messageData = {
+                    subject,
+                    body,
+                    category: selectedCategory,
+                    attachments: [...attachedFiles], // [{ name, type, dataURL }]
+                };
+
+                try {
+                    await apiFetch("/api/messages", {
+                        method: "POST",
+                        headers: authHeaders(),
+                        body: JSON.stringify(messageData),
+                    });
+
+                    clearCompose();
+                    showToast("✓ Message sent successfully!");
+                } catch (e) {
+                    showToast(e.message || "Failed to send message.", true);
+                }
+            }
+
+            function clearCompose() {
+                document.getElementById("compose-subject").value = "";
+                document.getElementById("compose-body").value = "";
+                attachedFiles = [];
+                renderFilePreviews();
+                selectedCategory = "General";
+                document
+                    .querySelectorAll(".category-btn")
+                    .forEach((b) => b.classList.remove("selected"));
+                document
+                    .querySelector('.category-btn[data-cat="General"]')
+                    .classList.add("selected");
+                document.getElementById("file-input").value = "";
+            }
+
+            /* ─── RENDER STUDENT SENT ───────────────────── */
+            // ── NEW API CALL: GET /api/messages?mine=true ──
+            async function renderStudentSent() {
+                const el = document.getElementById("student-sent-list");
+                el.innerHTML = `<div class="empty-state"><div class="empty-state-icon">⏳</div><div class="empty-state-title">LOADING…</div></div>`;
+
+                try {
+                    const msgs = await apiFetch("/api/messages?mine=true", {
+                        headers: authHeaders(),
+                    });
+
+                    if (!msgs.length) {
+                        el.innerHTML = `<div class="empty-state">
+        <div class="empty-state-icon">📭</div>
+        <div class="empty-state-title">NO MESSAGES YET</div>
+        <p class="empty-state-text">Send your first message using the New Message tab</p>
+      </div>`;
+                        return;
+                    }
+
+                    const withReplies = msgs.filter(
+                        (m) => m.replies && m.replies.length > 0,
+                    ).length;
+                    document.getElementById("s-reply-badge").textContent =
+                        withReplies;
+                    document
+                        .getElementById("s-reply-badge")
+                        .classList.toggle("hidden", withReplies === 0);
+
+                    el.innerHTML =
+                        `<div id="student-bulk-bar" class="bulk-bar hidden">
+                          <span class="bulk-bar-count" id="student-bulk-count">0 selected</span>
+                          <button class="nb-btn nb-btn-red nb-btn-sm" onclick="bulkDeleteMessages('student')">✕ Delete Selected</button>
+                          <button class="nb-btn nb-btn-white nb-btn-sm" onclick="clearSelections('student')">Cancel</button>
+                        </div>` +
+                        `<div class="msg-list">` +
+                        msgs.map((m) => msgCard(m, "student")).join("") +
+                        `</div>`;
+                } catch (e) {
+                    el.innerHTML = `<div class="empty-state"><div class="empty-state-icon">⚠️</div><div class="empty-state-title">COULD NOT LOAD</div><p class="empty-state-text">${e.message}</p></div>`;
+                }
+            }
+
+            /* ─── RENDER ADMIN INBOX ────────────────────── */
+            // ── NEW API CALL: GET /api/messages (with optional filter query) ──
+            async function renderAdminInbox(filter) {
+                currentFilter = filter;
+                let query = "";
+                if (filter === "unread") query = "?read=false";
+                else if (filter !== "all")
+                    query = "?category=" + encodeURIComponent(filter);
+
+                await fetchAndRenderAdminList("admin-msg-list", query);
+                await updateAdminStats();
+                await updateAdminBadges();
+            }
+
+            // Shared fetcher used by inbox, urgent and resolved tabs.
+            // ── NEW API CALL: GET /api/messages<queryString> ──
+            async function fetchAndRenderAdminList(
+                containerId,
+                queryString = "",
+            ) {
+                const el = document.getElementById(containerId);
+                el.innerHTML = `<div class="empty-state"><div class="empty-state-icon">⏳</div><div class="empty-state-title">LOADING…</div></div>`;
+
+                try {
+                    const msgs = await apiFetch("/api/messages" + queryString, {
+                        headers: authHeaders(),
+                    });
+                    renderAdminList(containerId, msgs);
+                } catch (e) {
+                    el.innerHTML = `<div class="empty-state"><div class="empty-state-icon">⚠️</div><div class="empty-state-title">COULD NOT LOAD</div><p class="empty-state-text">${e.message}</p></div>`;
+                }
+            }
+
+            function renderAdminList(containerId, msgs) {
+                const el = document.getElementById(containerId);
+                if (!msgs.length) {
+                    el.innerHTML = `<div class="empty-state">
+      <div class="empty-state-icon">📭</div>
+      <div class="empty-state-title">NO MESSAGES</div>
+      <p class="empty-state-text">Nothing here right now</p>
+    </div>`;
+                    return;
+                }
+                el.innerHTML =
+                    `<div id="admin-bulk-bar-${containerId}" class="bulk-bar hidden">
+                      <span class="bulk-bar-count" id="admin-bulk-count-${containerId}">0 selected</span>
+                      <button class="nb-btn nb-btn-red nb-btn-sm" onclick="bulkDeleteMessages('admin', '${containerId}')">✕ Delete Selected</button>
+                      <button class="nb-btn nb-btn-white nb-btn-sm" onclick="clearSelections('admin', '${containerId}')">Cancel</button>
+                    </div>` +
+                    `<div class="msg-list">` +
+                    msgs.map((m) => msgCard(m, "admin")).join("") +
+                    `</div>`;
+            }
+
+            // ── NEW API CALL: GET /api/messages/stats ──
+            async function updateAdminStats() {
+                const el = document.getElementById("admin-stats");
+                if (!el) return;
+                try {
+                    const stats = await apiFetch("/api/messages/stats", {
+                        headers: authHeaders(),
+                    });
+                    el.innerHTML = `
+      <div class="stat-card stat-card-yellow"><div class="stat-value">${stats.total}</div><div class="stat-label">Total Messages</div></div>
+      <div class="stat-card stat-card-blue"><div class="stat-value">${stats.unread}</div><div class="stat-label">Unread</div></div>
+      <div class="stat-card stat-card-red"><div class="stat-value">${stats.urgent}</div><div class="stat-label">Urgent</div></div>
+      <div class="stat-card"><div class="stat-value">${stats.resolved}</div><div class="stat-label">Resolved</div></div>
+    `;
+                } catch {
+                    // stats are non-critical — fail silently
+                }
+            }
+
+            // ── NEW API CALL: GET /api/messages/stats (reuses same endpoint) ──
+            async function updateAdminBadges() {
+                try {
+                    const stats = await apiFetch("/api/messages/stats", {
+                        headers: authHeaders(),
+                    });
+                    const ub = document.getElementById("a-unread-badge");
+                    const ab = document.getElementById("a-urgent-badge");
+                    if (ub) {
+                        ub.textContent = stats.unread;
+                        ub.classList.toggle("hidden", stats.unread === 0);
+                    }
+                    if (ab) {
+                        ab.textContent = stats.urgentOpen;
+                        ab.classList.toggle("hidden", stats.urgentOpen === 0);
+                    }
+                } catch {
+                    // badges are non-critical — fail silently
+                }
+            }
+
+            /* ─── MESSAGE CARD ──────────────────────────── */
+            function msgCard(m, viewer) {
+                const catColors = {
+                    Complaint: "nb-badge-red",
+                    Urgent: "nb-badge-red",
+                    Suggestion: "nb-badge-blue",
+                    Question: "nb-badge-yellow",
+                    General: "",
+                    "Media Report": "nb-badge-blue",
+                };
+                const statusColor =
+                    m.status === "resolved"
+                        ? "nb-badge-green"
+                        : m.replies.length
+                          ? "nb-badge-blue"
+                          : "";
+                const statusLabel =
+                    m.status === "resolved"
+                        ? "Resolved"
+                        : m.replies.length
+                          ? "Replied"
+                          : "Pending";
+                const timeStr = formatTime(m.timestamp);
+
+                return `
+    <div class="msg-item selectable ${!m.read && viewer === "admin" ? "unread" : ""}" id="msg-card-${m._id}">
+      <div class="msg-checkbox" id="chk-${m._id}" onclick="toggleSelect('${m._id}', '${viewer}', event)"></div>
+      <div onclick="openMessage('${m._id}')">
+        <div class="msg-item-header">
+          <div class="msg-from">${viewer === "admin" ? "🎒 " + m.from : "📨 To Admins"}</div>
+          <div class="msg-time">${timeStr}</div>
+        </div>
+        <div class="msg-subject">${m.subject}</div>
+        ${viewer === "admin" ? `<div style="font-family:var(--font-mono);font-size:0.65rem;color:#888;margin-bottom:6px;">${m.grade}</div>` : ""}
+        <div class="msg-preview">${m.body}</div>
+        <div class="msg-meta">
+          <span class="nb-badge ${catColors[m.category] || ""}">${m.category}</span>
+          <span class="nb-badge ${statusColor}">${statusLabel}</span>
+          ${m.attachments.length ? `<span class="nb-badge">📎 ${m.attachments.length} file${m.attachments.length > 1 ? "s" : ""}</span>` : ""}
+          ${m.replies.length ? `<span class="nb-badge nb-badge-blue">${m.replies.length} repl${m.replies.length > 1 ? "ies" : "y"}</span>` : ""}
+        </div>
+      </div>
+      <button class="msg-delete-btn" onclick="deleteSingleMessage('${m._id}', '${viewer}', event)">✕ Delete</button>
+    </div>
+  `;
+            }
+
+            /* ─── OPEN MESSAGE MODAL ────────────────────── */
+            // ── NEW API CALL: GET /api/messages/:id ──
+            // ── NEW API CALL: PATCH /api/messages/:id  { read: true } ──
+            async function openMessage(id) {
+                activeMessageId = id;
+                document.getElementById("msg-modal").classList.remove("hidden");
+                document.body.style.overflow = "hidden";
+
+                // Show loading state in modal while fetching
+                document.getElementById("modal-subject").textContent =
+                    "Loading…";
+                document.getElementById("modal-body-text").textContent = "";
+                document.getElementById("modal-media-grid").innerHTML = "";
+                document.getElementById("modal-replies-section").innerHTML = "";
+
+                try {
+                    const m = await apiFetch("/api/messages/" + id, {
+                        headers: authHeaders(),
+                    });
+
+                    // Mark as read (admin only) — fire-and-forget
+                    if (currentUser.role === "admin" && !m.read) {
+                        apiFetch("/api/messages/" + id, {
+                            method: "PATCH",
+                            headers: authHeaders(),
+                            body: JSON.stringify({ read: true }),
+                        })
+                            .then(() => {
+                                updateAdminBadges();
+                                updateAdminStats();
+                            })
+                            .catch(() => {});
+                    }
+
+                    // Populate modal
+                    document.getElementById("modal-subject").textContent =
+                        m.subject;
+                    document.getElementById("modal-avatar").textContent = m.from
+                        .charAt(0)
+                        .toUpperCase();
+                    document.getElementById("modal-sender-name").textContent =
+                        m.from;
+                    document.getElementById("modal-sender-meta").textContent =
+                        m.grade +
+                        " · ID: " +
+                        (m.studentId || "—") +
+                        " · " +
+                        formatTime(m.timestamp);
+
+                    const catColors = {
+                        Complaint: "nb-badge-red",
+                        Urgent: "nb-badge-red",
+                        Suggestion: "nb-badge-blue",
+                        Question: "nb-badge-yellow",
+                        "Media Report": "nb-badge-blue",
+                    };
+                    document.getElementById("modal-meta-badges").innerHTML =
+                        `<span class="nb-badge ${catColors[m.category] || ""}">${m.category}</span>` +
+                        ` <span class="nb-badge ${m.status === "resolved" ? "nb-badge-green" : ""}">${m.status === "resolved" ? "Resolved" : m.replies && m.replies.length ? "Replied" : "Pending"}</span>`;
+
+                    document.getElementById("modal-body-text").textContent =
+                        m.body;
+
+                    // Attachments
+                    const attBox = document.getElementById("modal-attachments");
+                    const grid = document.getElementById("modal-media-grid");
+                    if (m.attachments && m.attachments.length) {
+                        attBox.classList.remove("hidden");
+                        grid.innerHTML = m.attachments
+                            .map(
+                                (a) => `
+        <div class="modal-media-item">
+          ${
+              a.type.startsWith("image/")
+                  ? `<img src="${a.url || a.dataURL}" alt="${a.name}">`
+                  : `<video src="${a.url || a.dataURL}" controls style="width:280px;max-width:100%;"></video>`
+          }
+          <div class="modal-media-label">${a.name}</div>
+        </div>
+      `,
+                            )
+                            .join("");
+                    } else {
+                        attBox.classList.add("hidden");
+                    }
+
+                    // Replies
+                    const repSection = document.getElementById(
+                        "modal-replies-section",
+                    );
+                    if (m.replies && m.replies.length) {
+                        repSection.innerHTML = `
+        <div class="replies-title">Replies <span style="font-size:1rem;opacity:0.5">(${m.replies.length})</span></div>
+        ${m.replies
+            .map(
+                (r) => `
+          <div class="reply-item">
+            <div class="reply-header">
+              <div class="reply-from">${r.from}</div>
+              <div class="reply-role-tag">${r.adminRole}</div>
+              <div class="reply-time">${formatTime(r.timestamp)}</div>
+            </div>
+            <div class="reply-body">${r.body}</div>
+          </div>
+        `,
+            )
+            .join("")}
+      `;
+                    } else {
+                        repSection.innerHTML = "";
+                    }
+
+                    // Show reply compose only for admins
+                    const rCompose = document.getElementById(
+                        "admin-reply-compose",
+                    );
+                    rCompose.classList.toggle(
+                        "hidden",
+                        currentUser.role !== "admin",
+                    );
+                    if (currentUser.role === "admin")
+                        document.getElementById("reply-textarea").value = "";
+                } catch (e) {
+                    document.getElementById("modal-subject").textContent =
+                        "Error loading message";
+                    document.getElementById("modal-body-text").textContent =
+                        e.message;
+                }
+            }
+
+            function closeModal() {
+                document.getElementById("msg-modal").classList.add("hidden");
+                document.body.style.overflow = "";
+                activeMessageId = null;
+            }
+
+            function closeModalOnOverlay(e) {
+                if (e.target.id === "msg-modal") closeModal();
+            }
+
+            /* ─── SEND REPLY ────────────────────────────── */
+            // ── NEW API CALL: POST /api/messages/:id/replies ──
+            async function sendReply() {
+                if (!activeMessageId || currentUser.role !== "admin") return;
+                const text = document
+                    .getElementById("reply-textarea")
+                    .value.trim();
+                if (!text) {
+                    showToast("Reply cannot be empty.", true);
+                    return;
+                }
+
+                try {
+                    await apiFetch(
+                        "/api/messages/" + activeMessageId + "/replies",
+                        {
+                            method: "POST",
+                            headers: authHeaders(),
+                            body: JSON.stringify({ body: text }),
+                        },
+                    );
+
+                    showToast("✓ Reply sent!");
+                    closeModal();
+                    renderAdminInbox(currentFilter);
+                } catch (e) {
+                    showToast(e.message || "Failed to send reply.", true);
+                }
+            }
+
+            // ── NEW API CALL: PATCH /api/messages/:id  { status: "resolved" } ──
+            async function markResolved() {
+                if (!activeMessageId) return;
+
+                try {
+                    await apiFetch("/api/messages/" + activeMessageId, {
+                        method: "PATCH",
+                        headers: authHeaders(),
+                        body: JSON.stringify({ status: "resolved" }),
+                    });
+
+                    showToast("✓ Message marked as resolved.");
+                    closeModal();
+                    renderAdminInbox(currentFilter);
+                } catch (e) {
+                    showToast(e.message || "Failed to update status.", true);
+                }
+            }
+
+            /* ─── SELECT / DELETE ───────────────────────── */
+            function toggleSelect(id, viewer, e) {
+                e.stopPropagation();
+                const chk = document.getElementById("chk-" + id);
+                const card = document.getElementById("msg-card-" + id);
+                if (selectedMessages.has(id)) {
+                    selectedMessages.delete(id);
+                    chk.classList.remove("checked");
+                    chk.textContent = "";
+                    card.classList.remove("selected");
+                } else {
+                    selectedMessages.add(id);
+                    chk.classList.add("checked");
+                    chk.textContent = "✓";
+                    card.classList.add("selected");
+                }
+                updateBulkBar(viewer);
+            }
+
+            function updateBulkBar(viewer, containerId = "admin-msg-list") {
+                const count = selectedMessages.size;
+                if (viewer === "student") {
+                    const bar = document.getElementById("student-bulk-bar");
+                    const lbl = document.getElementById("student-bulk-count");
+                    if (bar) bar.classList.toggle("hidden", count === 0);
+                    if (lbl) lbl.textContent = count + " selected";
+                } else {
+                    const bar = document.getElementById("admin-bulk-bar-" + containerId);
+                    const lbl = document.getElementById("admin-bulk-count-" + containerId);
+                    if (bar) bar.classList.toggle("hidden", count === 0);
+                    if (lbl) lbl.textContent = count + " selected";
+                }
+            }
+
+            function clearSelections(viewer, containerId = "admin-msg-list") {
+                selectedMessages.forEach((id) => {
+                    const chk = document.getElementById("chk-" + id);
+                    const card = document.getElementById("msg-card-" + id);
+                    if (chk) { chk.classList.remove("checked"); chk.textContent = ""; }
+                    if (card) card.classList.remove("selected");
+                });
+                selectedMessages.clear();
+                updateBulkBar(viewer, containerId);
+            }
+
+            async function deleteSingleMessage(id, viewer, e) {
+                e.stopPropagation();
+                if (!confirm("Delete this message? This cannot be undone.")) return;
+                try {
+                    await apiFetch("/api/messages/" + id, {
+                        method: "DELETE",
+                        headers: authHeaders(),
+                    });
+                    selectedMessages.delete(id);
+                    showToast("✓ Message deleted.");
+                    if (viewer === "student") renderStudentSent();
+                    else renderAdminInbox(currentFilter);
+                } catch (e) {
+                    showToast(e.message || "Could not delete message.", true);
+                }
+            }
+
+            async function bulkDeleteMessages(viewer, containerId = "admin-msg-list") {
+                const ids = [...selectedMessages];
+                if (!ids.length) return;
+                if (!confirm(`Delete ${ids.length} message${ids.length > 1 ? "s" : ""}? This cannot be undone.`)) return;
+                try {
+                    await apiFetch("/api/messages/bulk-delete", {
+                        method: "POST",
+                        headers: authHeaders(),
+                        body: JSON.stringify({ ids }),
+                    });
+                    selectedMessages.clear();
+                    showToast("✓ " + ids.length + " message" + (ids.length > 1 ? "s" : "") + " deleted.");
+                    if (viewer === "student") renderStudentSent();
+                    else renderAdminInbox(currentFilter);
+                } catch (e) {
+                    showToast(e.message || "Could not delete messages.", true);
+                }
+            }
+
+            /* ─── FILTER ────────────────────────────────── */
+            function filterMsgs(btn, filter) {
+                document
+                    .querySelectorAll(".filter-btn")
+                    .forEach((b) => b.classList.remove("active-filter"));
+                btn.classList.add("active-filter");
+                renderAdminInbox(filter);
+            }
+
+            /* ─── TOAST ─────────────────────────────────── */
+            function showToast(msg, isError = false) {
+                const t = document.getElementById("toast");
+                t.textContent = msg;
+                t.className = "toast" + (isError ? " error" : "");
+                t.classList.add("show");
+                setTimeout(() => t.classList.remove("show"), 3000);
+            }
+
+            /* ─── FORMAT TIME ───────────────────────────── */
+            function formatTime(iso) {
+                const d = new Date(iso);
+                const now = new Date();
+                const diff = (now - d) / 1000;
+                if (diff < 60) return "Just now";
+                if (diff < 3600) return Math.floor(diff / 60) + "m ago";
+                if (diff < 86400) return Math.floor(diff / 3600) + "h ago";
+                if (diff < 604800) return Math.floor(diff / 86400) + "d ago";
+                return d.toLocaleDateString("en-US", {
+                    day: "numeric",
+                    month: "short",
+                    year:
+                        d.getFullYear() !== now.getFullYear()
+                            ? "numeric"
+                            : undefined,
+                });
+            }
+
+            /* ─── KEYBOARD ──────────────────────────────── */
+            document.addEventListener("keydown", (e) => {
+                if (e.key === "Escape") closeModal();
+            });
+
+            /* ─── INIT ──────────────────────────────────── */
+            showLanding();
+        </script>
+    </body>
+</html>
