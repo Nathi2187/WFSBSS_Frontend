@@ -2389,7 +2389,6 @@ async function loginAdmin() {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
                 name: name,
-                adminRole: adminRole,
                 password: password,
                 role: "admin", // Tells backend this is a Director login
             }),
@@ -2408,10 +2407,10 @@ async function loginAdmin() {
 
         // Update display names on the dashboard
         const nameDisp = document.getElementById("a-name-display");
-        const roleDisp = document.getElementById("a-role-display");
+        
         
         if (nameDisp) nameDisp.textContent = currentUser.name;
-        if (roleDisp) roleDisp.textContent = currentUser.adminRole;
+        
 
         // Initialize the Admin Tabs
         if (typeof sAdminTab === "function") sAdminTab("inbox");
