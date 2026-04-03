@@ -2358,52 +2358,76 @@
                 sAdminTab("inbox");
                 renderAdminInbox("all");
             }
-            // ── NEW API CALL: POST /api/auth/login (role: admin) ──
-            // Password is validated server-side ONLY. No password logic lives here.
-            async function loginAdmin() {
-                const name = document.getElementById("admin-name").value.trim();
-                const adminRole = document.getElementById("admin-role").value;
-                const password =
-                    document.getElementById("admin-password").value;
-                const err = document.getElementById("admin-error");
+            // ── REPLACEMENT: POST /api/auth/login (role: admin) ──
+// This version includes safety checks to prevent "null" errors
+async function loginAdmin() {
+    // 1. Reference the elements first
+    const nameEl = document.getElementById("admin-name");
+    const roleEl = document.getElementById("admin-role");
+    const passEl = document.getElementById("admin-password");
+    const errEl = document.getElementById("admin-error");
 
-                if (!name || !adminRole || !password) {
-                    err.classList.add("show");
-                    return;
-                }
-                err.classList.remove("show");
+    // 2. Safety Check: Only get values if elements exist
+    const name = nameEl ? nameEl.value.trim() : "";
+    const adminRole = roleEl ? roleEl.value : "";
+    const password = passEl ? passEl.value : "";
 
-                try {
-                    const data = await apiFetch("/api/auth/login", {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({
-                            name,
-                            adminRole,
-                            password,
-                            role: "admin",
-                        }),
-                    });
+    // 3. Validation: Ensure all fields are filled
+    if (!name || !adminRole || !password) {
+        if (errEl) {
+            errEl.textContent = "Please enter your name, role, and password.";
+            errEl.classList.add("show");
+        }
+        return;
+    }
 
-                    localStorage.setItem("auth_token", data.token);
-                    currentUser = data.user; // backend returns { name, role: "admin", adminRole }
+    // Clear previous errors if validation passes
+    if (errEl) errEl.classList.remove("show");
 
-                    hideAll();
-                    document
-                        .getElementById("screen-admin")
-                        .classList.remove("hidden");
-                    document.getElementById("a-name-display").textContent =
-                        currentUser.name;
-                    document.getElementById("a-role-display").textContent =
-                        currentUser.adminRole;
-                    sAdminTab("inbox");
-                    renderAdminInbox("all");
-                } catch (e) {
-                    err.textContent =
-                        e.message ||
-                        "Incorrect password or invalid credentials.";
-                    err.classList.add("show");
-                }
+    try {
+        // 4. API Call
+        const data = await apiFetch("/api/auth/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                name: name,
+                adminRole: adminRole,
+                password: password,
+                role: "admin", // Tells backend this is a Director login
+            }),
+        });
+
+        // 5. Success Logic: Save token and update UI
+        localStorage.setItem("auth_token", data.token);
+        
+        // Backend returns { user: { name, role, adminRole } }
+        currentUser = data.user; 
+
+        // Hide login screens and show Admin Dashboard
+        hideAll();
+        const adminScreen = document.getElementById("screen-admin");
+        if (adminScreen) adminScreen.classList.remove("hidden");
+
+        // Update display names on the dashboard
+        const nameDisp = document.getElementById("a-name-display");
+        const roleDisp = document.getElementById("a-role-display");
+        
+        if (nameDisp) nameDisp.textContent = currentUser.name;
+        if (roleDisp) roleDisp.textContent = currentUser.adminRole;
+
+        // Initialize the Admin Tabs
+        if (typeof sAdminTab === "function") sAdminTab("inbox");
+        if (typeof renderAdminInbox === "function") renderAdminInbox("all");
+
+    } catch (e) {
+        // 6. Error Handling: Display backend error message
+        if (errEl) {
+            errEl.textContent = e.message || "Incorrect password or invalid credentials.";
+            errEl.classList.add("show");
+        }
+        console.error("Login Error:", e);
+    }
+}
             }
 
                         /* ─── INIT ──────────────────────────────────── */
