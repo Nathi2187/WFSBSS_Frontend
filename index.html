@@ -2359,23 +2359,21 @@
                 renderAdminInbox("all");
             }
             // ── REPLACEMENT: POST /api/auth/login (role: admin) ──
-// This version includes safety checks to prevent "null" errors
+        // This version includes safety checks to prevent "null" errors
 async function loginAdmin() {
     // 1. Reference the elements first
     const nameEl = document.getElementById("admin-name");
-    const roleEl = document.getElementById("admin-role");
     const passEl = document.getElementById("admin-password");
     const errEl = document.getElementById("admin-error");
 
     // 2. Safety Check: Only get values if elements exist
     const name = nameEl ? nameEl.value.trim() : "";
-    const adminRole = roleEl ? roleEl.value : "";
     const password = passEl ? passEl.value : "";
 
     // 3. Validation: Ensure all fields are filled
-    if (!name || !adminRole || !password) {
+    if (!name || !password) {
         if (errEl) {
-            errEl.textContent = "Please enter your name, role, and password.";
+            errEl.textContent = "Please enter your name, and password.";
             errEl.classList.add("show");
         }
         return;
