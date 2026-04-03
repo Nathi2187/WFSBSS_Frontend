@@ -2307,141 +2307,138 @@
                 );
             }
 
-            /* ─── LOGIN ─────────────────────────────────── */
-            // ── API CALL: POST /api/auth/login (role: student) ──
-            // First visit  → registers the student (creates account with hashed password on the server).
-            // Return visit → verifies the stored password. Works from any device / browser.
-                        async function loginStudent() {
-                const name = document.getElementById("student-name").value.trim();
-                const id = document.getElementById("student-id").value.trim();
-                const err = document.getElementById("student-error");
- 
+           /* ─── LOGIN: STUDENT ─── */
+            async function loginStudent() {
+                const nameEl = document.getElementById("student-name");
+                const idEl = document.getElementById("student-id");
+                const errEl = document.getElementById("student-error");
+            
+                const name = nameEl?.value.trim() || "";
+                const id = idEl?.value.trim() || "";
+            
                 if (!name || !id) {
-                    err.textContent = "Full name and student ID are both required.";
-                    err.classList.add("show");
+                    if (errEl) {
+                        errEl.textContent = "Full name and student ID are both required.";
+                        errEl.classList.add("show");
+                    }
                     return;
                 }
-                err.classList.remove("show");
- 
+                
+                if (errEl) errEl.classList.remove("show");
+            
                 try {
                     const data = await apiFetch("/api/auth/login", {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({ name, studentId: id, role: "student" }),
                     });
- 
+            
                     localStorage.setItem("auth_token", data.token);
                     currentUser = data.user;
                     enterStudentDashboard();
                 } catch (e) {
-                    err.textContent = e.message || "Name or ID not found. Check spelling and try again.";
-                    err.classList.add("show");
+                    if (errEl) {
+                        errEl.textContent = e.message || "Name or ID not found. Check spelling and try again.";
+                        errEl.classList.add("show");
+                    }
                 }
             }
- 
-            // Shared function — used by both loginStudent and auto-restore
+            
+            /* ─── LOGIN: ADMIN ─── */
+            async function loginAdmin() {
+                const nameEl = document.getElementById("admin-name");
+                const passEl = document.getElementById("admin-password");
+                const errEl = document.getElementById("admin-error");
+            
+                const name = nameEl ? nameEl.value.trim() : "";
+                const password = passEl ? passEl.value : "";
+            
+                if (!name || !password) {
+                    if (errEl) {
+                        errEl.textContent = "Please enter your name and password.";
+                        errEl.classList.add("show");
+                    }
+                    return;
+                }
+            
+                if (errEl) errEl.classList.remove("show");
+            
+                try {
+                    const data = await apiFetch("/api/auth/login", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            name: name,
+                            password: password,
+                            role: "admin",
+                        }),
+                    });
+            
+                    localStorage.setItem("auth_token", data.token);
+                    currentUser = data.user; 
+            
+                    enterAdminDashboard();
+            
+                } catch (e) {
+                    if (errEl) {
+                        errEl.textContent = e.message || "Incorrect password or invalid credentials.";
+                        errEl.classList.add("show");
+                    }
+                    console.error("Login Error:", e);
+                }
+            }
+            
+            /* ─── DASHBOARD NAVIGATION ─── */
             function enterStudentDashboard() {
                 hideAll();
-                document.getElementById("screen-student").classList.remove("hidden");
-                document.getElementById("s-name-display").textContent = currentUser.name;
-                document.getElementById("s-grade-display").textContent =
-                    currentUser.grade + " · " + currentUser.studentId;
-                sStudentTab("compose");
+                const screen = document.getElementById("screen-student");
+                if (screen) screen.classList.remove("hidden");
+                
+                const nameDisp = document.getElementById("s-name-display");
+                const infoDisp = document.getElementById("s-grade-display");
+            
+                if (nameDisp) nameDisp.textContent = currentUser.name;
+                if (infoDisp) infoDisp.textContent = (currentUser.grade || "") + " · " + (currentUser.studentId || "");
+                
+                if (typeof sStudentTab === "function") sStudentTab("compose");
             }
- 
-            // Shared function — used by loginAdmin and auto-restore
+            
             function enterAdminDashboard() {
                 hideAll();
-                document.getElementById("screen-admin").classList.remove("hidden");
-                document.getElementById("a-name-display").textContent = currentUser.name;
-                document.getElementById("a-role-display").textContent = currentUser.adminRole;
-                sAdminTab("inbox");
-                renderAdminInbox("all");
-            }
-            // ── REPLACEMENT: POST /api/auth/login (role: admin) ──
-        // This version includes safety checks to prevent "null" errors
-async function loginAdmin() {
-    // 1. Reference the elements first
-    const nameEl = document.getElementById("admin-name");
-    const passEl = document.getElementById("admin-password");
-    const errEl = document.getElementById("admin-error");
-
-    // 2. Safety Check: Only get values if elements exist
-    const name = nameEl ? nameEl.value.trim() : "";
-    const password = passEl ? passEl.value : "";
-
-    // 3. Validation: Ensure all fields are filled
-    if (!name || !password) {
-        if (errEl) {
-            errEl.textContent = "Please enter your name, and password.";
-            errEl.classList.add("show");
-        }
-        return;
-    }
-
-    // Clear previous errors if validation passes
-    if (errEl) errEl.classList.remove("show");
-
-    try {
-        // 4. API Call
-        const data = await apiFetch("/api/auth/login", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                name: name,
-                password: password,
-                role: "admin", // Tells backend this is a Director login
-            }),
-        });
-
-        // 5. Success Logic: Save token and update UI
-        localStorage.setItem("auth_token", data.token);
-        
-        // Backend returns { user: { name, role, adminRole } }
-        currentUser = data.user; 
-
-        // Hide login screens and show Admin Dashboard
-        hideAll();
-        const adminScreen = document.getElementById("screen-admin");
-        if (adminScreen) adminScreen.classList.remove("hidden");
-
-        // Update display names on the dashboard
-        const nameDisp = document.getElementById("a-name-display");
-        
-        
-        if (nameDisp) nameDisp.textContent = currentUser.name;
-        
-
-        // Initialize the Admin Tabs
-        if (typeof sAdminTab === "function") sAdminTab("inbox");
-        if (typeof renderAdminInbox === "function") renderAdminInbox("all");
-
-    } catch (e) {
-        // 6. Error Handling: Display backend error message
-        if (errEl) {
-            errEl.textContent = e.message || "Incorrect password or invalid credentials.";
-            errEl.classList.add("show");
-        }
-        console.error("Login Error:", e);
-    }
-}
+                const screen = document.getElementById("screen-admin");
+                if (screen) screen.classList.remove("hidden");
             
-
-                        /* ─── INIT ──────────────────────────────────── */
-            // Try to restore session from localStorage token.
-            // If valid + not expired, skip login entirely.
+                const nameDisp = document.getElementById("a-name-display");
+                const roleDisp = document.getElementById("a-role-display");
+            
+                if (nameDisp) nameDisp.textContent = currentUser.name;
+                if (roleDisp) roleDisp.textContent = currentUser.adminRole || "Admin";
+            
+                if (typeof sAdminTab === "function") sAdminTab("inbox");
+                if (typeof renderAdminInbox === "function") renderAdminInbox("all");
+            }
+            
+            function logout() {
+                localStorage.removeItem("auth_token");
+                currentUser = null;
+                location.reload();
+            }
+            
+            /* ─── INIT: SESSION RESTORATION ───────────────── */
             (function restoreSession() {
                 const token = localStorage.getItem("auth_token");
-                if (!token) { showLanding(); return; }
+                if (!token) { 
+                    if (typeof showLanding === "function") showLanding(); 
+                    return; 
+                }
                 try {
                     const payload = JSON.parse(atob(token.split('.')[1]));
                     if (!payload.exp || payload.exp * 1000 < Date.now()) {
-                        // Token expired — clear and show landing
                         localStorage.removeItem("auth_token");
-                        showLanding();
+                        if (typeof showLanding === "function") showLanding();
                         return;
                     }
-                    // Valid token — restore user and go straight to dashboard
+            
                     currentUser = {
                         name: payload.name,
                         grade: payload.grade || '',
@@ -2449,20 +2446,19 @@ async function loginAdmin() {
                         role: payload.role,
                         adminRole: payload.adminRole || '',
                     };
+            
                     if (payload.role === 'student') {
                         enterStudentDashboard();
                     } else if (payload.role === 'admin') {
                         enterAdminDashboard();
                     } else {
-                        showLanding();
+                        if (typeof showLanding === "function") showLanding();
                     }
                 } catch (e) {
                     localStorage.removeItem("auth_token");
-                    showLanding();
+                    if (typeof showLanding === "function") showLanding();
                 }
             })();
- 
-
             /* ─── STUDENT TABS ──────────────────────────── */
             function sStudentTab(tab) {
                 document
